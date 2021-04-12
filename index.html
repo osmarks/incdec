@@ -1,0 +1,79 @@
+<meta name="viewport" content="user-scalable=0"> 
+<noscript>JavaScript is required for this.</noscript>
+<style>
+    body {
+        margin: 0;
+    }
+
+    #container {
+        width: 100%;
+        min-height: 100vh;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #container button {
+        width: 3em;
+        height: 3em;
+        font-size: 2em;
+        margin: 1em;
+        background-color: black;
+        color: white;
+        border: none;
+        z-index: 1;
+    }
+
+    #container #value {
+        font-size: 4em;
+    }
+
+    @media(orientation: portrait) {
+        #container { flex-direction: column; }
+        #container button { width: calc(100% - 2em); }
+    }
+</style>
+<div id="container">
+    <button id="up" onclick="increment()">+</button>
+    <div id="value">Loading...</div>
+    <button id="down" onclick="decrement()">-</button>
+</div>
+<script>
+    var output = document.querySelector("#value")
+    window.onerror = function(err) {
+        output.innerText = err
+        output.style.color = "red"
+    }
+
+    var url = (window.location.href + "api").replace("http", "ws")
+    console.log("connecting", url)
+    var socket = new WebSocket(url)
+    
+    function display(text) {
+        output.innerText = text
+    }
+
+    function send(obj) {
+        socket.send(JSON.stringify(obj))
+    }
+
+    socket.onmessage = function(ev) {
+        var msg = JSON.parse(ev.data)
+        if (msg.type === "value") {
+            display(msg.value.toString())
+        }
+    }
+
+    function increment() {
+        send({
+            type: "increment"
+        })
+    }
+
+    function decrement() {
+        send({
+            type: "decrement"
+        })
+    }
+</script>
