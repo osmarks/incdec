@@ -1,3 +1,6 @@
+<title>IncDec</title>
+<meta name="description" content="IncDec - the thrilling game of incrementing and decrementing.">
+<meta charset="utf-8">
 <meta name="viewport" content="user-scalable=0"> 
 <noscript>JavaScript is required for this.</noscript>
 <style>
@@ -35,9 +38,9 @@
     }
 </style>
 <div id="container">
-    <button id="up" onclick="increment()">+</button>
-    <div id="value">Loading...</div>
     <button id="down" onclick="decrement()">-</button>
+    <div id="value">Loading...</div>
+    <button id="up" onclick="increment()">+</button>
 </div>
 <script>
     var output = document.querySelector("#value")
@@ -54,26 +57,23 @@
         output.innerText = text
     }
 
-    function send(obj) {
-        socket.send(JSON.stringify(obj))
+    function send(s) {
+        socket.send(s)
     }
 
     socket.onmessage = function(ev) {
-        var msg = JSON.parse(ev.data)
-        if (msg.type === "value") {
-            display(msg.value.toString())
-        }
+        display(ev.data)
     }
 
     function increment() {
-        send({
-            type: "increment"
-        })
+        send("inc")
     }
 
     function decrement() {
-        send({
-            type: "decrement"
-        })
+        send("dec")
+    }
+
+    socket.onclose = function(ev) {
+        display("Disconnected!")
     }
 </script>

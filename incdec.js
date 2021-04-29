@@ -35,10 +35,7 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html")
 })
 
-const sendCounter = (ws, x) => ws.send(JSON.stringify({
-    type: "value",
-    value: x
-}))
+const sendCounter = (ws, x) => ws.send(x.toString())
 
 const transmitCounterUpdate = _.throttle(newValue => {
     wss.getWss().clients.forEach(ws => sendCounter(ws, newValue))
@@ -48,11 +45,10 @@ app.ws("/api", (ws, req) => {
     console.log("Connected")
     sendCounter(ws, counter)
     ws.on("message", async data => {
-        const msg = JSON.parse(data)
-        if (msg.type === "increment") {
+        if (data.includes("i")) {
             counter++
             transmitCounterUpdate(counter)
-        } else if (msg.type === "decrement") {
+        } else if (data.includes("d")) {
             counter--
             transmitCounterUpdate(counter)
         }

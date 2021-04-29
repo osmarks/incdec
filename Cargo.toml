@@ -1,0 +1,16 @@
+[package]
+name = "incdec"
+version = "0.1.0"
+authors = ["osmarks <osmarks@protonmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lazy_static = "1.4"
+tide = { version = "0.16.0", default-features = false, features = ["h1-server"] }
+async-std = { version = "1.9.0", features = ["attributes", "unstable"], default-features = false }
+tide-websockets = "0.2"
+anyhow = "1.0"
+prometheus = { version = "0.11.0", features = ["process"] }
+memchr = "2"
